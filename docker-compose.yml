@@ -1,0 +1,51 @@
+volumes:
+  db_data:
+  uploads:
+
+services:
+  db:
+    container_name: kiwi_db
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_DB: kiwi
+      POSTGRES_USER: kiwi
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  web:
+    container_name: kiwi_web
+    build:
+      context: .
+      dockerfile: Dockerfile.s3
+    depends_on:
+      - db
+    restart: always
+    ports:
+      - "80:8080"
+      - "443:8443"
+    environment:
+      KIWI_DB_ENGINE: django.db.backends.postgresql
+      KIWI_DB_HOST: db
+      KIWI_DB_PORT: 5432
+      KIWI_DB_NAME: kiwi
+      KIWI_DB_USER: kiwi
+      KIWI_DB_PASSWORD: ${POSTGRES_PASSWORD}
+      # Zona horaria
+      KIWI_TIME_ZONE: America/La_Paz
+      KIWI_USE_TZ: "True"
+
+      AWS_STORAGE_BUCKET_NAME: ${AWS_STORAGE_BUCKET_NAME}
+      AWS_S3_REGION_NAME: ${AWS_S3_REGION_NAME}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_S3_ENDPOINT_URL: ${AWS_S3_ENDPOINT_URL}
+      GOOGLE_OAUTH2_KEY: ${GOOGLE_OAUTH2_KEY}
+      GOOGLE_OAUTH2_SECRET: ${GOOGLE_OAUTH2_SECRET}
+    volumes:
+      - uploads:/Kiwi/uploads:Z
+      - ./ssl:/Kiwi/ssl:Z
+      - ./nginx.conf:/Kiwi/etc/nginx.conf:Z
+    cap_drop:
+      - ALL

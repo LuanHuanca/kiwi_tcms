@@ -1,0 +1,12 @@
+{% extends "registration/login.html" %}
+{% block custom_login %}
+<hr>
+<p style="text-align:center; margin-top: 15px;">
+  <form action="/login/google-oauth2/" method="post" style="display:inline;">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-primary">
+      Iniciar sesión con Google
+    </button>
+  </form>
+</p>
+{% endblock %}
