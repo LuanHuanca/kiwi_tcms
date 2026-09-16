@@ -747,7 +747,9 @@ def get_qa_rules() -> str:
 # ==============================================================================
 if __name__ == "__main__":
     logger.info(f"Iniciando Kiwi TCMS MCP Server en modo '{MCP_TRANSPORT}' en {MCP_HOST}:{MCP_PORT}")
-    if MCP_TRANSPORT == "sse":
+    if MCP_TRANSPORT == "streamable-http":
+        mcp.run(transport="streamable-http")
+    elif MCP_TRANSPORT == "sse":
         mcp.run(transport="sse")
     else:
         mcp.run(transport="stdio")
