@@ -1,0 +1,26 @@
+services:
+  kiwi-mcp-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: kiwi-mcp-server
+    restart: unless-stopped
+    ports:
+      - "${MCP_PORT:-8000}:8000"
+    environment:
+      # URL interna hacia Kiwi TCMS (en la misma red Docker se puede usar el nombre de contenedor)
+      - KIWI_URL=${KIWI_URL:-https://kiwi_web:8443}
+      - KIWI_USER=${KIWI_USER:-admin}
+      - KIWI_PASSWORD=${KIWI_PASSWORD:-123123}
+      - KIWI_HOST_HEADER=${KIWI_HOST_HEADER:-localhost}
+      - KIWI_PUBLIC_URL=${KIWI_PUBLIC_URL:-https://localhost}
+      # Configuración del servidor MCP
+      - MCP_TRANSPORT=sse
+      - MCP_HOST=0.0.0.0
+      - MCP_PORT=8000
+    networks:
+      - kiwitcms_default
+
+networks:
+  kiwitcms_default:
+    external: true
