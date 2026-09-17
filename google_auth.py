@@ -19,3 +19,18 @@ settings.TEMPLATES[0]['DIRS'].insert(0, os.path.join(settings.TCMS_ROOT_PATH, 'o
 
 # Usa nuestro urlconf personalizado, que incluye las rutas de social_django
 ROOT_URLCONF = "custom_urls"
+
+# Pipeline personalizado: agrega automáticamente al grupo Tester
+SOCIAL_AUTH_PIPELINE = (
+    "social_core.pipeline.social_auth.social_details",
+    "social_core.pipeline.social_auth.social_uid",
+    "social_core.pipeline.social_auth.auth_allowed",
+    "social_core.pipeline.social_auth.social_user",
+    "social_core.pipeline.user.get_username",
+    "social_core.pipeline.user.create_user",
+    "social_core.pipeline.social_auth.associate_user",
+    "social_core.pipeline.social_auth.load_extra_data",
+    "social_core.pipeline.user.user_details",
+    "custom_urls.add_to_tester_group",
+)
+

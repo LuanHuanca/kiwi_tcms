@@ -15,7 +15,7 @@ services:
       - KIWI_HOST_HEADER=${KIWI_HOST_HEADER:-localhost}
       - KIWI_PUBLIC_URL=${KIWI_PUBLIC_URL:-https://localhost}
       # Configuración del servidor MCP
-      - MCP_TRANSPORT=sse
+      - MCP_TRANSPORT=streamable-http
       - MCP_HOST=0.0.0.0
       - MCP_PORT=8000
     networks:
