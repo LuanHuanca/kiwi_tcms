@@ -14,6 +14,17 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data
 
+  mailhog:
+    container_name: kiwi_mailhog
+    image: mailhog/mailhog:v1.0.1
+    restart: always
+    ports:
+      # Solo el Web UI se publica al host. El puerto SMTP (1025) NO se
+      # publica: 'web' lo usa por la red interna de docker, sin exponerlo.
+      # Como el server solo permite tráfico externo vía VPN, esto ya
+      # queda accesible como http://<host>:8025 para quien esté en la VPN.
+      - "8025:8025"
+
   web:
     container_name: kiwi_web
     build:
@@ -21,6 +32,7 @@ services:
       dockerfile: Dockerfile.s3
     depends_on:
       - db
+      - mailhog
     restart: always
     ports:
       - "80:8080"
@@ -43,6 +55,15 @@ services:
       AWS_S3_ENDPOINT_URL: ${AWS_S3_ENDPOINT_URL}
       GOOGLE_OAUTH2_KEY: ${GOOGLE_OAUTH2_KEY}
       GOOGLE_OAUTH2_SECRET: ${GOOGLE_OAUTH2_SECRET}
+
+      # Correo: por defecto va a MailHog (captura interna, no entrega real).
+      EMAIL_HOST: ${EMAIL_HOST:-mailhog}
+      EMAIL_PORT: ${EMAIL_PORT:-1025}
+      EMAIL_HOST_USER: ${EMAIL_HOST_USER:-}
+      EMAIL_HOST_PASSWORD: ${EMAIL_HOST_PASSWORD:-}
+      EMAIL_USE_TLS: ${EMAIL_USE_TLS:-False}
+      EMAIL_USE_SSL: ${EMAIL_USE_SSL:-False}
+      DEFAULT_FROM_EMAIL: ${DEFAULT_FROM_EMAIL:-kiwi@cirrus-it.net}
     volumes:
       - uploads:/Kiwi/uploads:Z
       - ./ssl:/Kiwi/ssl:Z

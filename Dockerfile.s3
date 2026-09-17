@@ -3,6 +3,7 @@ USER root
 RUN pip install --no-cache-dir django-storages[s3] boto3 social-auth-app-django
 COPY s3_storage.py /venv/lib64/python3.12/site-packages/tcms_settings_dir/s3_storage.py
 COPY google_auth.py /venv/lib64/python3.12/site-packages/tcms_settings_dir/google_auth.py
+COPY email_settings.py /venv/lib64/python3.12/site-packages/tcms_settings_dir/email_settings.py
 COPY templates.d/ /venv/lib64/python3.12/site-packages/tcms/overridden_templates/
 COPY custom_urls.py /venv/lib64/python3.12/site-packages/custom_urls.py
 
